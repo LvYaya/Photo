@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .nav-bg{
+            background:rgb(214,238,246);
+        }
+        .mytitle{
+            font-size: 3.5rem;
+            line-height: 100%;
+        }
+        @media screen and (max-width:800px){
+            .mytitle{
+            font-size: 20px;
+            line-height: 100%;
+        }
+        h2,h3{
+            font-size: 20px;
+        }
+        }
+        #myNavUl li a{
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        #my2017id:hover,#my2017id:focus{
+            background: #38B6E6;
+            color:white; 
+        }
+        #my2016id:hover,#my2016id:focus{
+            background: #ED544C;
+            color:white;
+        }
+        #my2015id:hover,#my2015id:focus{
+            background: #16B5A3;
+            color:white;
+        }
+        #my2014id:hover,#my2014id:focus{
+            background: #447FCA;
+            color:white;
+        }
+
+        .grid-item{
+            margin: 0;
+           padding: 0;
+        }
+        .grid-item img{
+        width: 100%;
+        height: auto;
+        }
+
+        .grid-item figcaption{
+            background: rgba(0,0,0,0.2);
+            position: absolute;
+            top:0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        .grid-item:hover figcaption{
+            background:linear-gradient(white,black);
+            opacity: 0.5;
+            /*background: rgba(0,0,0,0.4);*/
+        }
+        .grid-item figcaption h2{
+            color:rgba(255,255,255,0.8);
+            position:absolute;
+            top:50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .grid-item:hover .animate-h2-text{
+
+        }
+
+        .grid-item figcaption p{
+            text-align: center;
+            color:rgba(255,255,255,0.8);
+            position: absolute;
+            bottom: 20px;
+            font-size: 20px;
+            margin:0 20px;
+            transform: translateX(-110%);
+             transition-delay: 0.2s;
+        }
+        .animate-text { opacity: 0; transition: all 0.6s ease-in-out; }
+        .grid-item:hover .animate-text {
+             transform: translateX(0);
+             opacity: 1; 
+        }
+        .grid-item figcaption a{
+            display: block;
+            position: absolute;
+            top:0;
+            left:0;
+            right: 0;
+            bottom: 0;
+        }
+        #myTabContent{
+            background: rgb(214,238,246);
+            margin:0;
+            padding: 0;
+        }
+
+        /*利用css3实现等高布局*/
+        .box{ 
+            display: flex; 
+            margin-top:15px;
+            margin-bottom: 15px;
+          /*  display: -webkit-flex;
+            justify-content: center;
+            align-items:stretch;*/
+           
+        }
+        .boxItem{
+            flex: 1;
+            background:#E0F3F1;
+            margin-left:5px;
+            margin-right: 5px;
+           /* flex-grow:1;
+            -webkit-box-flex-group: 1;
+           */
+        }
+        .boxItem h1,.boxItem p{
+            padding: 15px;
+            font-size: 20px;
+        }
+        .boxItem form input,.boxItem form textarea,.boxItem form button{
+            margin-top:10px;
+        }
+        .boxItem form button{
+            margin-bottom: 10px;
+        }
+        /*屏幕比较小的时候，一个div占满一行，所以把margin设为0
+         为大屏幕的时候，多个div占一行，为了设置彼此之间的间隔，所以设置margin的左右值；
+        */
+        @media screen and (max-width:800px){
+            .box{
+                display: block;
+                flex-flow: column;
+                flex-wrap:wrap;
+                margin-top:20px;
+                margin-bottom: 20px;
+            }
+            .boxItem{
+                margin: 0;
+            }
+        }
+        footer{
+            margin:0;
+            padding: 0;
+            text-align: center;
+            background: rgb(214,238,246); 
+            font-size: 3.5rem;
+        }
+       
+        footer div{
+            padding: 30px;
+           
+        }
+        footer div a{
+            padding: 30px;
+        }
+        @media screen and (max-width:800px){
+            footer{
+                font-size: 20px;
+            }
+            footer div{
+                padding: 20px;
+            }
+            footer div a{
+            padding: 20px;
+        }
+        }
+    </style>
+</head>
+<body>
+    <!--响应式导航栏 下拉菜单 选项卡；
+        利用模态框和图片轮播实现“点击查看大图及前后项”（获取该图片在“目录图片”中的序号，设置对应图片轮播中对应序号中的图片，让该图片具有"class"类）
+        ？？存在的问题：动态获取当前图片（具有active类的图片）的序号，为什么总是返回-1找不到；
+        设置响应式字体：要利用@media screen and(max-width:800px){};
+        
+    -->
+    <nav class="navbar navbar-default nav-bg" role="navigation" style="margin-bottom: 0;">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#my-navbar-collapse">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand"><span class="mytitle"><span class="glyphicon glyphicon-picture"></span> LVYAYA</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="my-navbar-collapse">
+            <ul class="nav  navbar-nav navbar-right" id="myNavUl">
+                <li class="active"><a href="#my2017" data-toggle="tab" id="my2017id"><h2>2017</h2></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="my2016id">
+                        <h2>2016<span class="caret"></span></h2>
+                        
+                    </a>
+                    <ul class="dropdown-menu" role="menu" araia-labelledby="myTabDrop1" style="margin:0;padding:0;">
+                        <li><a href="#my2016nj" data-toggle="tab"><h3>NJ</h3></a></li>
+                        <li><a href="#my2016tj" data-toggle="tab"><h3>TJ</h3></a></li>
+
+                    </ul>
+                </li>
+                <li><a href="#my2015" data-toggle="tab" id="my2015id"><h2>2015</h2></a></li>
+                <li><a href="#my2014" data-toggle="tab" id="my2014id"><h2>2014</h2></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="my2017">
+            <div class="row " >
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/1.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>1</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                           <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/2.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>2</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/3.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>3</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/4.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>4</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/5.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>5</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/6.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>6</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/7.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>7</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/8.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>8</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/9.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>9</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/10.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>10</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/11.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>11</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-xs-6 col-sm-3 grid-item">
+                    <figure>
+                        <img src="img/12.jpg"/>
+                        <figcaption class="">
+                            <h2 class="tm-figure-title animate-h2-text">IMAGE <span>12</span></h2>
+                            <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                            <a data-toggle="modal" data-target="#myModal"></a>
+                        </figcaption>
+                    </figure>
+                </div>
+     
+            </div>
+        </div>
+        <div class="tab-pane fade" id="my2016nj">
+                <div class="row " >
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/1.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>1</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                            <figure>
+                                <img src="img/2.jpg"/>
+                                <figcaption class="">
+                                    <h2 class="tm-figure-title animate-h2-text">IMAGE <span>2</span></h2>
+                                    <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                    <a data-toggle="modal" data-target="#myModal"></a>
+                                </figcaption>
+                            </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/3.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>3</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/4.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>4</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/5.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>5</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/6.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>6</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/7.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>7</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/8.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>8</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/9.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>9</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/10.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>10</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/11.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>11</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/12.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>12</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+            
+                </div>
+        </div>
+        <div class="tab-pane fade" id="my2016tj">
+                <div class="row " >
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/1.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>1</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                            <figure>
+                                <img src="img/2.jpg"/>
+                                <figcaption class="">
+                                    <h2 class="tm-figure-title animate-h2-text">IMAGE <span>2</span></h2>
+                                    <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                    <a data-toggle="modal" data-target="#myModal"></a>
+                                </figcaption>
+                            </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/3.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>3</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/4.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>4</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/5.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>5</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/6.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>6</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/7.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>7</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/8.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>8</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/9.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>9</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/10.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>10</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/11.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>11</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 grid-item">
+                        <figure>
+                            <img src="img/12.jpg"/>
+                            <figcaption class="">
+                                <h2 class="tm-figure-title animate-h2-text">IMAGE <span>12</span></h2>
+                                <p class="tm-figure-description animate-text">select true or false in HTML script tag for this page black and white.</p>
+                                <a data-toggle="modal" data-target="#myModal"></a>
+                            </figcaption>
+                        </figure>
+                    </div>
+            
+                </div>
+        </div>
+        <div class="tab-pane fade" id="my2015" style="background:#62C4B9">
+            <div class="container">
+                <div class="row box">
+                    <div class="col-sm-12 boxItem">
+                            <h1>Multiple Columns</h1>
+                            <p>Set true or false in HTML page line number 40 to turn on
+                                 off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                 finibus maximus mauris. Nam laoreet eros nec convallis placerat.</p>
+                    </div>
+                    <div class="boxItem col-sm-12 ">
+                            <h1>Multiple Columns</h1>
+                            <p>Set true or false in HTML page line number 40 to turn on
+                                 off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                 finibus maximus mauris. Nam laoreet eros nec convallis placerat.</p>
+                        </div>
+                        <div class="boxItem col-sm-12 ">
+                                <h1>Multiple Columns</h1>
+                                <p>Set true or false in HTML page line number 40 to turn on
+                                     off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                     finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                                     Set true or false in HTML page line number 40 to turn on
+                                     off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                     finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                                </p>
+                            </div>
+                </div>
+                <div class="row box">
+                        <div class="boxItem col-sm-12" >
+                            <h1>Multiple Columns</h1>
+                            <p>Set true or false in HTML page line number 40 to turn on
+                                 off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                 finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                                 Set true or false in HTML page line number 40 to turn on
+                                 off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                 finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                            </p>
+                        </div>
+                        <div class="boxItem col-sm-12">
+                                <h1>Multiple Columns</h1>
+                                <p>Set true or false in HTML page line number 40 to turn on
+                                     off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                     finibus maximus mauris. Nam laoreet eros nec convallis placerat.</p>
+                            </div>
+                    </div>
+                    <div class="row box">
+                        <div class="col-sm-12 boxItem">
+                            <h1>Multiple Columns</h1>
+                            <p>Set true or false in HTML page line number 40 to turn on
+                                    off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                    finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                                    Set true or false in HTML page line number 40 to turn on
+                                    off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                    finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                            </p>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="my2014" style="background:#7EA3D1;">
+            <div class="container">
+                <div class="row box">
+                    <div class="col-sm-12 boxItem">
+                         <h1>Multiple Columns</h1>
+                         <p>Set true or false in HTML page line number 40 to turn on
+                                off page color. Mauris elit elit, imperdiet nec lorem sed, 
+                                finibus maximus mauris. Nam laoreet eros nec convallis placerat.
+                                Set true or false in HTML page line number 40 to turn on
+                                off page color. Mauris elit elit, imperdiet nec lorem sed,</p> 
+                         <form role="form">
+                             <div class="form-group">
+                                <input type="text" placeholder="Name" class="form-control input-lg col-md-2" required/>
+                                <input type="email" placeholder="email" class="form-control input-lg col-md-3" required/>
+                                <textarea rows="8" class="form-control col-md-5" required>Message</textarea>
+                                <button type="button" class="btn-lg  btn-default col-md-3">SENG</button>
+                             </div>
+                         </form>
+                    </div>
+                    <div class="col-sm-12 boxItem">
+                           <h1>lvyaya</h1> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="">
+            <a href="index.html#my2015"><span>LVYAYA</span></a>
+            <a href="index.html#my2014"><span class="glyphicon glyphicon-phone-alt"></span></a>
+            <a href="index.html#my2014"> <span class="glyphicon glyphicon-envelope"></span></a>
+        </div>
+    </footer>
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-content col-md-6 col-md-offset-3" style="background:rgba(0,0,0,0);">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:white;opacity:1;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!--<img src="img1/tj1.jpg" style="width:auto;max-width:100%;height:auto; max-height:100%;"/>-->
+                <div class="carousel slide" id="myCarousel">
+                    <div class="carousel-inner myCarouselInner">
+                        <div class="item active">
+                            <img src="img/01.jpg"/ alt="1">
+                        </div>
+                       <div class="item">
+                            <img src="img/02.jpg" alt="2"/>
+                        </div>
+                        <div class="item">
+                            <img src="img/03.jpg" alt="3"/>
+                        </div>
+                        <div class="item">
+                            <img src="img/04.jpg" alt="3"/>
+                        </div>
+                        <div class="item ">
+                            <img src="img/05.jpg"/ alt="1">
+                        </div>
+                        <div class="item">
+                            <img src="img/06.jpg" alt="2"/>
+                        </div>
+                        <div class="item">
+                            <img src="img/07.jpg" alt="3"/>
+                        </div>
+                        <div class="item">
+                            <img src="img/08.jpg" alt="3"/>
+                        </div>
+                        <div class="item ">
+                            <img src="img/09.jpg"/ alt="1">
+                        </div>
+                        <div class="item">
+                            <img src="img/010.jpg" alt="2"/>
+                        </div>
+                        <div class="item">
+                            <img src="img/011.jpg" alt="3"/>
+                        </div>
+                        <div class="item">
+                            <img src="img/012.jpg" alt="3"/>
+                        </div>
+                    </div>
+                    <a class="carousel-control left" href="#myCarousel" data-slide="prev" id="imgPrev">&lsaquo;</a>
+                    <a class="carousel-control right" href="#myCarousel" data-slide="next" id="imgNext">&rsaquo;</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span  style="color:white;font-size:bold;"></span>
+            </div>
+        </div>   
+    </div>
+    <script>
+        $(function(){
+            var navBgColor=["#D6EEF7","#F8DCDA","#E0F3F1","#D0EDEA"];
+            $("nav ul li").hover(function(){
+               var index=$(this).index(); 
+               
+               $(".nav-bg").css("background",navBgColor[index]);
+            });
+
+            $("#my2017 .grid-item").click(function(){
+                $(".myCarouselInner div").removeClass("active").eq($(this).index()).addClass("active");
+            });
+
+            var index=$(".myCarouselInner div").index($(".active"))+1;//index为什么总等于-1
+            var imgLength=$(".myCarouselInner div img").length;
+            $("#myModal .modal-footer span").html(index+"/"+imgLength);
+
+
+            $("#my2016nj .grid-item").click(function(){
+                $(".myCarouselInner div").removeClass("active").eq($(this).index()).addClass("active");
+            })
+            $("#my2016tj .grid-item").click(function(){
+                $(".myCarouselInner div").removeClass("active").eq($(this).index()).addClass("active");
+            })
+        })
+    </script>
+</body>
+</html>
